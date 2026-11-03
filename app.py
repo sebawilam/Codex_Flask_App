@@ -1,6 +1,6 @@
 from flask import Flask, abort, redirect, render_template, request, url_for
 
-app = Flask(__name__, static_folder=None)
+app = Flask(__name__)
 
 LINKS = [
     ("Python", "https://www.python.org/"),

@@ -2,22 +2,30 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Links</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
-  <body>
-    <nav><a href="{{ url_for('about') }}">About</a></nav>
-    <h1>My Links</h1>
-    <form action="{{ url_for('add_link') }}" method="post">
-      <label for="name">Site name</label>
-      <input type="text" id="name" name="name" required>
-      <label for="url">URL</label>
-      <input type="url" id="url" name="url" required>
-      <button type="submit">Add Link</button>
-    </form>
-    <ul>
-      {% for name, url in links %}
-      <li><a href="{{ url }}">{{ name }}</a></li>
-      {% endfor %}
-    </ul>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased">
+    <main class="mx-auto w-full max-w-[600px] px-4 py-12 sm:px-6">
+      <nav class="mb-8 text-sm"><a class="text-sky-700 underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600" href="{{ url_for('about') }}">About</a></nav>
+      <h1 class="mb-6 text-3xl font-bold tracking-tight text-slate-900">My Links</h1>
+      <form class="mb-8 space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm" action="{{ url_for('add_link') }}" method="post">
+        <div>
+          <label class="mb-1.5 block text-sm font-medium" for="name">Site name</label>
+          <input class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 placeholder:text-slate-400 focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200" type="text" id="name" name="name" placeholder="My favorite site" required>
+        </div>
+        <div>
+          <label class="mb-1.5 block text-sm font-medium" for="url">URL</label>
+          <input class="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 placeholder:text-slate-400 focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200" type="url" id="url" name="url" placeholder="https://example.com" required>
+        </div>
+        <button class="w-full rounded-lg bg-sky-700 px-4 py-2.5 font-semibold text-white transition-colors hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600" type="submit">Add Link</button>
+      </form>
+      <ul class="space-y-3">
+        {% for name, url in links %}
+        <li><a class="block break-words rounded-xl border border-slate-200 bg-white p-5 font-medium text-sky-800 shadow-sm transition-colors hover:border-sky-300 hover:bg-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600" href="{{ url }}">{{ name }}</a></li>
+        {% endfor %}
+      </ul>
+    </main>
   </body>
 </html>
