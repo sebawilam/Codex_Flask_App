@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased">
+    <main class="mx-auto w-full max-w-[600px] px-4 py-12 sm:px-6">
+      <nav class="mb-8 text-sm"><a class="text-sky-700 underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600" href="{{ url_for('index') }}">Back to My Links</a></nav>
+      <h1 class="mb-6 text-3xl font-bold tracking-tight text-slate-900">Contact</h1>
+      <div class="rounded-xl border border-slate-200 bg-white p-5 leading-relaxed shadow-sm">
+        <p>Have a question or a suggestion? Send me an email. I'd love to hear from you.</p>
+        <a class="mt-4 block break-words text-sky-700 underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600" href="mailto:contact@example.com">contact@example.com</a>
+      </div>
+    </main>
+  </body>
+</html>

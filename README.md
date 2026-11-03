@@ -13,6 +13,9 @@ The root URL (`/`) displays the My Links page.
 - View rich link cards with a preview image, title, description, and clickable URL.
 - Select **Edit** to change a link's name or URL, then **Save Changes** to return home.
 - Select **Delete** to remove a link and return home.
+- Select **Contact** in the homepage navigation to see a short message and a
+  clickable email address. The page currently uses `contact@example.com`; replace
+  it with your address in `templates/contact.html`.
 
 Adding a link fetches its Open Graph title, description, and image URL. Missing
 or empty tags and failed page requests display `Not Available`. Changing a link's
@@ -30,6 +33,7 @@ URLs are changed.
 | POST | `/edit/<link_index>` | Submit `name` and `url`, update the link, and redirect home. |
 | POST | `/delete/<link_index>` | Remove a link using its Delete button and redirect home. |
 | GET | `/about` | Display the About page. |
+| GET | `/contact` | Display the contact message and email address. |
 
 Link indexes are zero-based positions in the current in-memory list.
 
