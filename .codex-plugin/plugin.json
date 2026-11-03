@@ -5,7 +5,7 @@
   "author": {
     "name": "Codex"
   },
-  "skills": "./.agents/skills/update-readme/SKILL.md",
+  "skills": "./.codex/skills/update-readme/SKILL.md",
   "mcpServers": {
     "context7": {
       "command": "npx",
