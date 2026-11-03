@@ -1,12 +1,45 @@
+import requests
+from bs4 import BeautifulSoup
 from flask import Flask, abort, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 
+DEFAULT_METADATA = {
+    "title": "Not Available",
+    "description": "Not Available",
+    "image_url": "Not Available",
+}
+
 LINKS = [
-    ("Python", "https://www.python.org/"),
-    ("Flask", "https://flask.palletsprojects.com/"),
-    ("GitHub", "https://github.com/"),
+    {"name": name, "url": url, **DEFAULT_METADATA}
+    for name, url in [
+        ("Python", "https://www.python.org/"),
+        ("Flask", "https://flask.palletsprojects.com/"),
+        ("GitHub", "https://github.com/"),
+    ]
 ]
+
+
+def fetch_metadata(url):
+    metadata = DEFAULT_METADATA.copy()
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException:
+        return metadata
+
+    soup = BeautifulSoup(response.content, "html.parser")
+    for field, property_name in [
+        ("title", "og:title"),
+        ("description", "og:description"),
+        ("image_url", "og:image"),
+    ]:
+        tag = soup.find("meta", attrs={"property": property_name})
+        if tag:
+            content = tag.get("content", "").strip()
+            if content:
+                metadata[field] = content
+    return metadata
 
 
 @app.get("/")
@@ -20,7 +53,7 @@ def add_link():
     url = request.form["url"].strip()
     if not name or not url:
         abort(400)
-    LINKS.append((name, url))
+    LINKS.append({"name": name, "url": url, **fetch_metadata(url)})
     return redirect(url_for("index"))
 
 
@@ -33,10 +66,16 @@ def edit_link(link_index):
         url = request.form["url"].strip()
         if not name or not url:
             abort(400)
-        LINKS[link_index] = (name, url)
+        link = LINKS[link_index].copy()
+        if url != link["url"]:
+            link.update(fetch_metadata(url))
+        link.update(name=name, url=url)
+        LINKS[link_index] = link
         return redirect(url_for("index"))
-    name, url = LINKS[link_index]
-    return render_template("edit.html", link_index=link_index, name=name, url=url)
+    link = LINKS[link_index]
+    return render_template(
+        "edit.html", link_index=link_index, name=link["name"], url=link["url"]
+    )
 
 
 @app.post("/delete/<int:link_index>")

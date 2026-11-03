@@ -11,6 +11,12 @@ python3 -m venv .venv
 
 The root URL (`/`) displays the My Links page.
 
+Adding a link fetches its Open Graph title, description, and image URL. Missing
+or empty tags and failed page requests display `Not Available`. Changing a link's
+URL refreshes its metadata. Links and metadata are stored in memory and reset
+when the app restarts; the initial example links use `Not Available` until their
+URLs are changed.
+
 ## Styles
 
 Tailwind CSS is compiled into `static/style.css` and served by Flask. Deployment
