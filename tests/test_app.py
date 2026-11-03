@@ -42,15 +42,44 @@ class LinkMetadataTests(unittest.TestCase):
         self.assertEqual(LINKS[-1]["image_url"], "https://example.com/image.jpg")
         page = BeautifulSoup(self.client.get("/").data, "html.parser")
         card = page.select("li")[-1]
-        self.assertEqual(
-            [heading.get_text() for heading in card.select("dt")],
-            ["Title", "Description", "Image URL"],
-        )
-        self.assertEqual(
-            [value.get_text() for value in card.select("dd")],
-            ["Example & title", "A useful description", "https://example.com/image.jpg"],
-        )
+        self.assertEqual(card.img["src"], "https://example.com/image.jpg")
+        self.assertEqual(card.h2.get_text(), "Example & title")
+        self.assertEqual(card.p.get_text(), "A useful description")
+        self.assertEqual(card.select("a")[-1]["href"], "https://example.com/")
+        self.assertEqual(card.select("a")[-1].get_text(), "https://example.com/")
         self.get.assert_called_once()
+
+    def test_cards_without_metadata_keep_static_fallbacks(self):
+        page = BeautifulSoup(self.client.get("/").data, "html.parser")
+        for card in page.select("li"):
+            self.assertIsNone(card.img)
+            self.assertEqual(
+                [heading.get_text() for heading in card.select("dt")],
+                ["Title", "Description", "Image URL"],
+            )
+            self.assertEqual(
+                [value.get_text() for value in card.select("dd")],
+                ["Not Available"] * 3,
+            )
+            self.assertTrue(card.select_one('a[aria-label^="Edit "]'))
+            self.assertTrue(card.select_one('form[method="post"]'))
+
+    def test_partial_metadata_shows_available_values_and_static_fallbacks(self):
+        for field, value in [
+            ("title", "Only a title"),
+            ("description", "Only a description"),
+            ("image_url", "https://example.com/only-image.jpg"),
+        ]:
+            with self.subTest(field=field):
+                LINKS[:] = [{"name": "Example", "url": "https://example.com/", **DEFAULT_METADATA, field: value}]
+                card = BeautifulSoup(self.client.get("/").data, "html.parser").li
+                self.assertEqual(card.h2.get_text(), value if field == "title" else "Not Available")
+                self.assertEqual(card.p.get_text(), value if field == "description" else "Not Available")
+                if field == "image_url":
+                    self.assertEqual(card.img["src"], value)
+                else:
+                    self.assertIsNone(card.img)
+                    self.assertIn("Image URL: Not Available", card.get_text())
 
     def test_missing_empty_and_contentless_tags_use_fallback(self):
         for html in [
