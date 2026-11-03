@@ -7,6 +7,13 @@
   <body>
     <nav><a href="{{ url_for('about') }}">About</a></nav>
     <h1>My Links</h1>
+    <form action="{{ url_for('add_link') }}" method="post">
+      <label for="name">Site name</label>
+      <input type="text" id="name" name="name" required>
+      <label for="url">URL</label>
+      <input type="url" id="url" name="url" required>
+      <button type="submit">Add Link</button>
+    </form>
     <ul>
       {% for name, url in links %}
       <li><a href="{{ url }}">{{ name }}</a></li>
